@@ -7,27 +7,16 @@
     "background_color": "#0a0a0a",
     "theme_color": "#FFD700",
     "orientation": "portrait",
-    "categories": ["entertainment", "finance", "video"],
     "icons": [
         {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSIjMEExQTFBIi8+Cjx0ZXh0IHg9IjI1NiIgeT0iMjc2IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQwIiBmaWxsPSIjRkZENTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5SlPC90ZXh0Pgo8L3N2Zz4K",
-            "sizes": "512x512",
-            "type": "image/svg+xml",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzAiIGZpbGw9IiMwQTFBMUEiLz4KPHRleHQgeD0iOTYiIHk9IjEwNCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjkwIiBmaWxsPSIjRkZENTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5SlPC90ZXh0Pgo8L3N2Zz4K",
+            "src": "/icons/icon-192x192.png",
             "sizes": "192x192",
-            "type": "image/svg+xml",
-            "purpose": "any maskable"
+            "type": "image/png"
         },
         {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiByeD0iMjAiIGZpbGw9IiMwQTFBMUEiLz4KPHRleHQgeD0iNjQiIHk9IjY4IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjAiIGZpbGw9IiNGRkQ1MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCflKU8L3RleHQ+Cjwvc3ZnPgo=",
-            "sizes": "128x128",
-            "type": "image/svg+xml",
-            "purpose": "any maskable"
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
         }
-    ],
-    "screenshots": [
-        {
-            "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzYwIiBoZWlnaHQ9IjY0MCIgdmlld0JveD0iMCAwIDM2MCA2NDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzNjAiIGhlaWdodD0iNjQwIiBmaWxsPSIjMEExQTFBIi8+CjxyZWN0IHg9IjIwIiB5PSIyMCIgd2lkdGg9IjMyMCIgaGVpZ2h0PSI2MDAiIHJ4PSIyMCIgZmlsbD0iIzFhMWExYSIvPgo8dGV4dCB4PSIxODAiIHk9IjgwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNGRkQ1MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKfpKXwn5SlIFZpZGVvIEVhcm5pbmdzPC90ZXh0Pgo8cmVjdCB4PSI0MCIgeT0iMTIwIiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjEwMCIgcng9IjEwIiBmaWxsPSIjRkZENTAwIi8+Cjx0ZXh0IHg9IjE4MCIgeT0iMTc1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IiMwMDAwMDAiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4kMTIuNDU8L3RleHQ+CjxyZWN0IHg9IjQwIiB5PSIyNDAiIHdpZHRoPSIyODAiIGhlaWdodD0iNjAiIHJ4PSIxMCIgZmlsbD0iIzFBMTkxOSIvPgo8dGV4dCB4PSIxODAiIHk9IjI3NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjRkZGRkZGIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7in6SkIFdhdGNoIFZpZGVvICsgJDAuMDA1PC90ZXh0Pgo8cmVjdCB4PSI0MCIgeT0iMzIwIiB3aWR0aD0iMjgwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNlYTRjMzUiLz4KPHRleHQgeD0iMTgwIiB5PSIzNTUiIGZvbnQtZmFtaWx5
+    ]
+}
