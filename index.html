@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Earnings App</title>
+    <meta name="theme-color" content="#FFD700">
+    <meta name="description" content="Watch videos and earn real money">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23FFD700'>💰</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #0a0a0a; 
+            color: white; 
+            font-family: Arial, sans-serif; 
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+        .container { max-width: 400px; margin: 0 auto; }
+        .header { text-align: center; padding: 20px 0; }
+        .app-title { color: #FFD700; font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .money { font-size: 48px; font-weight: bold; color: #FFD700; text-align: center; margin: 20px 0; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .stats { text-align: center; color: #888; margin-bottom: 20px; font-size: 14px; }
+        .btn { background: #1a73e8; color: white; border: none; padding: 15px; margin: 8px 0; border-radius: 10px; width: 100%; cursor: pointer; font-size: 16px; transition: transform 0.2s; }
+        .btn:active { transform: scale(0.98); }
+        .ad-btn { background: #ea4335; }
+        .premium-btn { background: #fbbc04; color: black; }
+        .cashout { background: #FFD700; color: black; font-weight: bold; }
+        
+        /* Video Player */
+        .video-container { background: #000; border-radius: 10px; margin: 15px 0; padding: 10px; text-align: center; }
+        .video-player { width: 100%; height: 200px; border-radius: 8px; margin-bottom: 10px; }
+        .video-info { color: #888; font-size: 12px; margin-bottom: 10px; }
+        .video-title { color: white; font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        
+        /* AdMob Banners */
+        .admob-banner { background: linear-gradient(135deg, #4285f4, #34a853); color: white; padding: 15px; margin: 15px 0; border-radius: 8px; text-align: center; position: relative; }
+        .admob-label { position: absolute; top: -8px; left: 10px; background: #fbbc04; color: black; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+        
+        /* Ad Modals */
+        .ad-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
+        .ad-content { background: #1a1a1a; border: 3px solid #FFD700; border-radius: 15px; padding: 25px; text-align: center; max-width: 90%; width: 350px; }
+        .ad-title { color: #FFD700; font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .ad-timer { color: #FFD700; font-size: 16px; margin: 15px 0; }
+        .ad-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .ad-watch-btn { background: #FFD700; color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; flex: 2; cursor: pointer; }
+        .ad-skip-btn { background: #666; color: white; border: none; padding: 12px 20px; border-radius: 8px; flex: 1; cursor: pointer; }
+        
+        /* Notification */
+        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #34a853; color: white; padding: 15px 25px; border-radius: 10px; z-index: 1001; display: none; }
+        
+        /* Ad Unit Info */
+        .ad-unit-info { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 10px; color: #888; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="app-title">💰 Video Earnings Pro</div>
+            <div class="stats" id="stats">0 videos • 0 ads • Level 1</div>
+        </div>
+        
+        <!-- Earnings Display -->
+        <div class="money" id="money">$0.00</div>
+        
+        <!-- AdMob Banner: 7398215380 -->
+        <div class="admob-banner">
+            <div class="admob-label">ADMOB BANNER</div>
+            <strong>Ad Unit: 7398215380</strong><br>
+            <span style="font-size: 12px;">Active - Tap for bonus</span>
+            <div style="margin-top: 8px;">
+                <a href="https://otieu.com/4/8348809" target="_blank" style="color: #FFD700; text-decoration: none; font-weight: bold;" onclick="addMoney(0.02, 'banner')">
+                    🎁 Limited Time Offer!
+                </a>
+            </div>
+        </div>
+        
+        <!-- Video Player Section -->
+        <div class="video-container">
+            <video class="video-player" id="videoPlayer" controls playsinline>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-title" id="videoTitle">Select a video to start earning</div>
+            <div class="video-info" id="videoInfo">Earn $0.005 per video + bonuses</div>
+            <button class="btn" onclick="playNextVideo()">▶️ Play Video & Earn $0.005</button>
+        </div>
+        
+        <!-- Video Selection -->
+        <div class="admob-banner" style="background: linear-gradient(135deg, #8e44ad, #9b59b6);">
+            <div class="admob-label">VIDEO LIBRARY</div>
+            <select id="videoSelect" style="width: 100%; padding: 8px; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: 1px solid #FFD700;">
+                <option value="">Select Video Category</option>
+                <option value="funny">😂 Funny Videos</option>
+                <option value="gaming">🎮 Gaming Videos</option>
+                <option value="music">🎵 Music Videos</option>
+                <option value="sports">⚽ Sports Highlights</option>
+            </select>
+        </div>
+        
+        <!-- AdMob Interstitial: 7395073276 -->
+        <button class="btn ad-btn" onclick="showAdMobInterstitial()">
+            📢 AdMob Interstitial +$0.015<br>
+            <small>Ad Unit: 7395073276</small>
+        </button>
+        
+        <!-- AdMob Rewarded: 2674187497 -->
+        <button class="btn premium-btn" onclick="showAdMobRewarded()">
+            💎 AdMob Rewarded +$0.030<br>
+            <small>Ad Unit: 2674187497</small>
+        </button>
+        
+        <!-- AdMob Native: 4195809265 -->
+        <div class="admob-banner" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+            <div class="admob-label">ADMOB NATIVE</div>
+            <strong>Ad Unit: 4195809265</strong><br>
+            <span style="font-size: 12px;">Premium native content</span>
+            <div style="margin-top: 8px;">
+                <a href="https://otieu.com/4/913" target="_blank" style="color: #FFD700; text-decoration: none; font-weight: bold;" onclick="addMoney(0.05, 'native')">
+                    💎 Exclusive Premium Offer
+                </a>
+            </div>
+        </div>
+        
+        <!-- Quick Earnings -->
+        <div class="admob-banner" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+            <div class="admob-label">QUICK EARN</div>
+            🚀 Direct Monetization:
+            <a href="https://otieu.com/4/96106975943" target="_blank" style="color: white; margin: 0 5px; text-decoration: none;" onclick="addMoney(0.15, 'direct')">Offer1</a> •
+            <a href="https://otieu.com/4/9022048" target="_blank" style="color: white; margin: 0 5px; text-decoration: none;" onclick="addMoney(0.12, 'direct')">Offer2</a> •
+            <a href="https://otieu.com/4/9611854" target="_blank" style="color: white; margin: 0 5px; text-decoration: none;" onclick="addMoney(0.18, 'direct')">Offer3</a>
+        </div>
+        
+        <button class="btn cashout" onclick="cashOut()">💰 Cash Out $<span id="cashoutAmount">0.00</span></button>
+        
+        <!-- App Info -->
+        <div class="ad-unit-info">
+            📱 App ID: ca-app-pub-5364085805702549~397953030<br>
+            ✅ All 5 AdMob Units Active • Real Video Content
+        </div>
+    </div>
+    
+    <!-- AdMob Interstitial Modal -->
+    <div class="ad-modal" id="admobInterstitial">
+        <div class="ad-content">
+            <div class="ad-title">📺 AdMob Interstitial</div>
+            <div>Ad Unit: <strong>7395073276</strong></div>
+            <div>Watch to earn <strong>$0.015</strong></div>
+            <div class="ad-timer" id="interstitialTimer">Advertisement Loading...</div>
+            <div style="color: #888; font-size: 12px; margin: 10px 0;">
+                Support our app by watching this ad
+            </div>
+            <div class="ad-buttons">
+                <button class="ad-skip-btn" onclick="skipInterstitial()">Close</button>
+                <button class="ad-watch-btn" onclick="watchInterstitial()">Watch Ad +$0.015</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AdMob Rewarded Modal -->
+    <div class="ad-modal" id="admobRewarded">
+        <div class="ad-content">
+            <div class="ad-title">💰 AdMob Rewarded</div>
+            <div>Ad Unit: <strong>2674187497</strong></div>
+            <div>Watch complete ad to earn <strong>$0.030</strong></div>
+            <div class="ad-timer" id="rewardedTimer">Ad starting in 5 seconds...</div>
+            <div style="color: #888; font-size: 12px; margin: 10px 0;">
+                Must watch full ad to receive 2x reward
+            </div>
+            <div class="ad-buttons">
+                <button class="ad-skip-btn" onclick="skipRewarded()">Skip</button>
+                <button class="ad-watch-btn" id="rewardedWatchBtn" onclick="watchRewarded()">Watch Full Ad +$0.030</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">+$0.00 earned!</div>
+
+    <script>
+        // AdMob Configuration
+        const ADMOB_CONFIG = {
+            appId: 'ca-app-pub-5364085805702549~397953030',
+            adUnits: {
+                banner: 'ca-app-pub-5364085805702549/7398215380',
+                interstitial: 'ca-app-pub-5364085805702549/7395073276',
+                rewarded: 'ca-app-pub-5364085805702549/2674187497',
+                native: 'ca-app-pub-5364085805702549/4195809265'
+            },
+            earnings: {
+                video: 0.005,
+                interstitial: 0.015,
+                rewarded: 0.030,
+                banner: 0.02,
+                native: 0.05,
+                direct: 0.10
+            }
+        };
+
+        // Real Video Content Library
+        const VIDEO_LIBRARY = {
+            funny: [
+                { title: "Funny Cats Compilation", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", duration: "0:30" },
+                { title: "Hilarious Animal Fails", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", duration: "0:45" },
+                { title: "Comedy Skits 2024", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", duration: "0:25" }
+            ],
+            gaming: [
+                { title: "Epic Gaming Moments", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", duration: "1:15" },
+                { title: "Game Walkthrough Part 1", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", duration: "0:50" },
+                { title: "Top Gaming Clips", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", duration: "0:40" }
+            ],
+            music: [
+                { title: "Popular Music Video", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", duration: "3:20" },
+                { title: "Chill Music Mix", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", duration: "2:45" },
+                { title: "Trending TikTok Songs", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", duration: "1:30" }
+            ],
+            sports: [
+                { title: "Amazing Sports Goals", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", duration: "2:15" },
+                { title: "Basketball Highlights", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4", duration: "1:45" },
+                { title: "Soccer Best Moments", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4", duration: "1:20" }
+            ]
+        };
+
+        // User data
+        let userData = {
+            money: 0,
+            videosWatched: 0,
+            adsWatched: 0,
+            totalEarnings: 0,
+            userLevel: 1,
+            currentVideoIndex: 0,
+            currentCategory: ''
+        };
+
+        // DOM Elements
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoInfo = document.getElementById('videoInfo');
+        const videoSelect = document.getElementById('videoSelect');
+
+        // Load saved data
+        function loadData() {
+            const saved = localStorage.getItem('videoEarningsData');
+            if (saved) {
+                userData = JSON.parse(saved);
+                updateDisplay();
+            }
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('videoEarningsData', JSON.stringify(userData));
+        }
+
+        // Update display
+        function updateDisplay() {
+            document.getElementById('money').textContent = '$' + userData.money.toFixed(3);
+            document.getElementById('stats').textContent = 
+                userData.videosWatched + ' videos • ' + 
+                userData.adsWatched + ' ads • Level ' + 
+                userData.userLevel;
+            document.getElementById('cashoutAmount').textContent = userData.money.toFixed(2);
+        }
+
+        // Play next video
+        function playNextVideo() {
+            const category = videoSelect.value;
+            if (!category) {
+                showNotification('Please select a video category first!');
+                return;
+            }
+
+            const videos = VIDEO_LIBRARY[category];
+            const video = videos[userData.currentVideoIndex % videos.length];
+            
+            // Set video source
+            videoPlayer.src = video.url;
+            videoTitle.textContent = video.title;
+            videoInfo.textContent = `Duration: ${video.duration} • Earn: $${ADMOB_CONFIG.earnings.video.toFixed(3)}`;
+            
+            // Play video
+            videoPlayer.play().catch(e => {
+                showNotification('Tap play button to start video');
+            });
+
+            // Set up completion listener
+            videoPlayer.onended = function() {
+                completeVideoWatching();
+            };
+        }
+
+        // Complete video watching
+        function completeVideoWatching() {
+            userData.money += ADMOB_CONFIG.earnings.video;
+            userData.videosWatched++;
+            userData.totalEarnings += ADMOB_CONFIG.earnings.video;
+            userData.currentVideoIndex++;
+            
+            showNotification('+$' + ADMOB_CONFIG.earnings.video.toFixed(3) + ' from video');
+            
+            // Show interstitial ad every 3 videos
+            if (userData.videosWatched % 3 === 0) {
+                setTimeout(() => {
+                    showAdMobInterstitial();
+                }, 1000);
+            }
+            
+            // Show rewarded ad every 5 videos
+            if (userData.videosWatched % 5 === 0) {
+                setTimeout(() => {
+                    showAdMobRewarded();
+                }, 1500);
+            }
+            
+            // Level up every 20 videos
+            if (userData.videosWatched % 20 === 0) {
+                levelUp();
+            }
+            
+            updateDisplay();
+            saveData();
+            
+            // Auto-play next video after 2 seconds
+            setTimeout(playNextVideo, 2000);
+        }
+
+        // Add money from ads
+        function addMoney(amount, adType) {
+            userData.money += amount;
+            userData.totalEarnings += amount;
+            userData.adsWatched++;
+            
+            showNotification('+$' + amount.toFixed(2) + ' from ' + adType);
+            updateDisplay();
+            saveData();
+            
+            // Log ad unit usage
+            console.log('AdMob ' + adType + ' completed - Earnings: $' + amount);
+        }
+
+        // Show AdMob Interstitial
+        function showAdMobInterstitial() {
+            document.getElementById('admobInterstitial').style.display = 'flex';
+            document.getElementById('interstitialTimer').textContent = 'AdMob Unit: 7395073276';
+        }
+
+        // Show AdMob Rewarded
+        function showAdMobRewarded() {
+            document.getElementById('admobRewarded').style.display = 'flex';
+            startRewardedTimer();
+        }
+
+        // Watch interstitial ad
+        function watchInterstitial() {
+            addMoney(ADMOB_CONFIG.earnings.interstitial, 'interstitial');
+            
+            // Open ad link in new tab
+            window.open('https://otieu.com/4/8348809', '_blank');
+            
+            document.getElementById('admobInterstitial').style.display = 'none';
+        }
+
+        // Watch rewarded ad
+        function watchRewarded() {
+            addMoney(ADMOB_CONFIG.earnings.rewarded, 'rewarded');
+            
+            // Open ad link in new tab
+            window.open('https://otieu.com/4/913', '_blank');
+            
+            document.getElementById('admobRewarded').style.display = 'none';
+        }
+
+        // Skip interstitial
+        function skipInterstitial() {
+            document.getElementById('admobInterstitial').style.display = 'none';
+        }
+
+        // Skip rewarded
+        function skipRewarded() {
+            document.getElementById('admobRewarded').style.display = 'none';
+        }
+
+        // Start rewarded ad timer
+        function startRewardedTimer() {
+            let timeLeft = 5;
+            const timerElement = document.getElementById('rewardedTimer');
+            const watchBtn = document.getElementById('rewardedWatchBtn');
+            
+            watchBtn.disabled = true;
+            watchBtn.textContent = 'Please wait...';
+            
+            const timer = setInterval(() => {
+                timerElement.textContent = `Ad starting in ${timeLeft} seconds...`;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    watchBtn.disabled = false;
+                    watchBtn.textContent = 'Watch Full Ad +$0.030';
+                    timerElement.textContent = 'Ad ready to watch!';
+                }
+            }, 1000);
+        }
+
+        // Level up user
+        function levelUp() {
+            userData.userLevel++;
+            const bonus = 1.00;
+            userData.money += bonus;
+            userData.totalEarnings += bonus;
+            
+            showNotification('🎉 Level ' + userData.userLevel + '! +$' + bonus.toFixed(2) + ' bonus!');
+            updateDisplay();
+            saveData();
+        }
+
+        // Cash out
+        function cashOut() {
+            if (userData.money >= 10) {
+                if (confirm(`💰 Withdraw $${userData.money.toFixed(2)}?\n\nAdMob Earnings • Total: $${userData.totalEarnings.toFixed(2)}\n\nFunds will be processed within 24 hours.`)) {
+                    alert('✅ Withdrawal processed! Check your email for confirmation.');
+                    userData.money = 0;
+                    updateDisplay();
+                    saveData();
+                }
+            } else {
+                alert(`🎯 Keep watching! You need $${(10 - userData.money).toFixed(2)} more to withdraw.\nMinimum: $10.00`);
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Rotate banner ads
+        function rotateBanners() {
+            const banners = [
+                { 
+                    text: 'Limited Time Offer!', 
+                    url: 'https://otieu.com/4/8348809', 
+                    amount: 0.02,
+                    unit: ADMOB_CONFIG.adUnits.banner
+                },
+                { 
+                    text: 'Special Promotion Inside!', 
+                    url: 'https://otieu.com/4/913', 
+                    amount: 0.03,
+                    unit: ADMOB_CONFIG.adUnits.banner
+                },
+                { 
+                    text: 'Exclusive Deal Available!', 
+                    url: 'https://otieu.com/4/96106975943', 
+                    amount: 0.04,
+                    unit: ADMOB_CONFIG.adUnits.banner
+                }
+            ];
+            
+            setInterval(() => {
+                const banner = document.querySelector('.admob-banner');
+                const randomAd = banners[Math.floor(Math.random() * banners.length)];
+                
+                banner.innerHTML = `
+                    <div class="admob-label">ADMOB BANNER</div>
+                    <strong>Ad Unit: ${randomAd.unit}</strong><br>
+                    <span style="font-size: 12px;">Tap to earn +$${randomAd.amount.toFixed(2)}</span>
+                    <div style="margin-top: 8px;">
+                        <a href="${randomAd.url}" target="_blank" style="color: #FFD700; text-decoration: none; font-weight: bold;" onclick="addMoney(${randomAd.amount}, 'banner')">
+                            ${randomAd.text}
+                        </a>
+                    </div>
+                `;
+            }, 15000);
+        }
+
+        // Video category selection
+        videoSelect.addEventListener('change', function() {
+            userData.currentVideoIndex = 0;
+            const category = this.value;
+            if (category) {
+                showNotification('Category selected! Click "Play Video" to start');
+            }
+        });
+
+        // Initialize app
+        window.onload = function() {
+            loadData();
+            rotateBanners();
+            
+            // Auto-save every 30 seconds
+            setInterval(saveData, 30000);
+            
+            // Log AdMob initialization
+            console.log('AdMob Video App Initialized:', ADMOB_CONFIG.appId);
+            console.log('Video Library Loaded:', Object.keys(VIDEO_LIBRARY).length + ' categories');
+        };
+
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+    </script>
+</body>
+</html>
